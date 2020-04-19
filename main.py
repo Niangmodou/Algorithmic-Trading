@@ -59,10 +59,10 @@ def simple_moving_average(stock):
     signals['signal'] = 0.0
 
     #Creating a short simple moving average over the short window
-    signals['Short_mAvg'] = aapl['Close'].rolling(window=short_window,min_periods=1, center=False).mean()
+    signals['Short_mAvg'] = stock['Close'].rolling(window=short_window,min_periods=1, center=False).mean()
 
     #Creating a long simple moving average over the long window
-    signals['Long_mAvg'] = aapl['Close'].rolling(window=long_window,min_periods=1, center=False).mean()
+    signals['Long_mAvg'] = stock['Close'].rolling(window=long_window,min_periods=1, center=False).mean()
 
     #Creates a signal for when the SMA crosses the LMA
     signals['signal'][short_window:] = np.where(signals['Short_mAvg'][short_window:]
