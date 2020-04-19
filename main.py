@@ -1,5 +1,6 @@
 '''
 Algorithmic-Trading Strategy using Python
+Simple Moving Average
 Made with love by Modou Niang
 '''
 
@@ -70,6 +71,48 @@ def simple_moving_average(stock):
 
     #Generate Trading orders by taking the difference
     signals['positions'] = signals['signal'].diff()
+
+def backtest(signals,stock):
+    initial_capital = 1000000
+
+    positions = pd.DataFrame(index=signals.index).fillna(0.0)
+
+    #Buy 100 shares
+    positions['AAPL'] = 100*signals['signal']
+
+    portfolio = positions.multiply(stock['Adj Close'],axis=0)
+
+    pos_difference = positions.diff()
+
+    portfolio['Holdings'] = (positions.multiply(stock['Adj Close'],axis=0)).sum(axis=1)
+
+    portfolio['Cash'] = initial_capital - (pos_difference.multiply(stock['Adj Close'],
+                                                                    axis=0)).sum(axis=1).cumsum()
+
+    portfolio['Total'] = portfolio['Cash'] + portfolio['Holdings']
+
+    portfolio['Returns'] = portfolio['Total'].pct_change()
+
+    portfolio.head()
+
+    #Visualizing portfolio value
+    # Create a figure
+    fig = plt.figure()
+
+    ax1 = fig.add_subplot(111, ylabel='Portfolio value in $')
+
+    # Plot the equity curve in dollars
+    portfolio['Total'].plot(ax=ax1, lw=2.)
+
+    ax1.plot(portfolio.loc[signals.positions == 1.0].index,
+             portfolio.Total[signals.positions == 1.0],
+             '^', markersize=10, color='m')
+    ax1.plot(portfolio.loc[signals.positions == -1.0].index,
+             portfolio.Total[signals.positions == -1.0],
+             'v', markersize=10, color='k')
+
+    # Show the plot
+    plt.show()
 
 def main():
 
