@@ -1,6 +1,6 @@
 '''
 Algorithmic-Trading Strategy using Python
-Simple Moving Average
+Moving Average Convergence/Divergence
 Made with love by Modou Niang
 '''
 
@@ -112,7 +112,7 @@ def backtest(signals,stock):
              'v', markersize=10, color='k')
 
     # Show the plot
-    plt.show()
+    #plt.show()
 
 def main():
 
